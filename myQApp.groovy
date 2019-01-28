@@ -347,26 +347,26 @@ def createChilDevices(door, sensor, doorName, prefPushButtons){
                 if (sensor){
                     try{
                         log.debug "Creating door with sensor"
-                        addChildDevice("brbeaird", "MyQ Garage Door Opener", door, getHubID(), ["name": doorName]) 
+                        addChildDevice("tchoward", "MyQ Garage Door Opener", door, getHubID(), ["name": doorName]) 
                         state.installMsg = state.installMsg + doorName + ": created door device (sensor version) \r\n\r\n"
                     }
                     catch(com.hubitat.app.exception.UnknownDeviceTypeException e)
                     {
                         log.debug "Error! " + e                        
-                        state.installMsg = state.installMsg + doorName + ": problem creating door device (sensor type). Check your IDE to make sure the brbeaird : MyQ Garage Door Opener device handler is installed and published. \r\n\r\n"
+                        state.installMsg = state.installMsg + doorName + ": problem creating door device (sensor type). Check your IDE to make sure the tchoward : MyQ Garage Door Opener device handler is installed and published. \r\n\r\n"
                         
                     }
                 }
                 else{
                     try{
                         log.debug "Creating door with no sensor"
-                        addChildDevice("brbeaird", "MyQ Garage Door Opener-NoSensor", door, getHubID(), ["name": doorName]) 
+                        addChildDevice("tchoward", "MyQ Garage Door Opener-NoSensor", door, getHubID(), ["name": doorName]) 
                         state.installMsg = state.installMsg + doorName + ": created door device (no-sensor version) \r\n\r\n"
                     }
                     catch(com.hubitat.app.exception.UnknownDeviceTypeException e)
                     {
                         log.debug "Error! " + e                        
-                        state.installMsg = state.installMsg + doorName + ": problem creating door device (no-sensor type). Check your IDE to make sure the brbeaird : MyQ Garage Door Opener-NoSensor device handler is installed and published. \r\n\r\n"
+                        state.installMsg = state.installMsg + doorName + ": problem creating door device (no-sensor type). Check your IDE to make sure the tchoward : MyQ Garage Door Opener-NoSensor device handler is installed and published. \r\n\r\n"
                     }
                 }
             
