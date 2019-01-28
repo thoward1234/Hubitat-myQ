@@ -74,7 +74,7 @@ def prefListDevices() {
                 return dynamicPage(name: "prefListDevices",  title: "Devices", nextPage:nextPage, install:false, uninstall:true) {
                     if (state.doorList) {
                         section("Select which garage door/gate to use") {
-                            input("doors", "enum", required:false, multiple:true, options:[state.doorList])
+                            input("doors", "enum", required:false, multiple:true, options:state.doorList)
                             input("priority", "enum", title: "Default Message Priority (Blank = NORMAL):", description: "", defaultValue: "0", options:[["-1":"LOW"], ["0":"NORMAL"], ["1":"HIGH"]])
 
                         }
