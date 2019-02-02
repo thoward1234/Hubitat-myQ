@@ -381,14 +381,14 @@ def createChilDevices(door, sensor, doorName, prefPushButtons){
             state.installMsg = state.installMsg + doorName + ": door device already exists. \r\n\r\n"
             if ((!sensor) && existingType == "MyQ Garage Door Opener"){
             	log.debug "Type needs updating to non-sensor version"
-                existingDev.deviceType = "MyQ Garage Door Opener-NoSensor2"
-                state.installMsg = state.installMsg + doorName + ": changed door device to No-sensor version." + "\r\n\r\n"
+                //existingDev.deviceType = "MyQ Garage Door Opener-NoSensor2"
+                state.installMsg = state.installMsg + doorName + ": needs to be changed to No-sensor version. Go remove Sensor Version Driver then re-install." + "\r\n\r\n"
             }
             
             if (sensor && existingType == "MyQ Garage Door Opener-NoSensor"){
             	log.debug "Type needs updating to sensor version"
-                existingDev.deviceType = "MyQ Garage Door Opener"
-                state.installMsg = state.installMsg + doorName + ": changed door device to sensor version." + "\r\n\r\n"
+                //existingDev.deviceType = "MyQ Garage Door Opener"
+                state.installMsg = state.installMsg + doorName + ": needs to be changed to Sensor version. Go remove No-Sensor Version Driver then re-install." + "\r\n\r\n"
             }            
         }
         else{
