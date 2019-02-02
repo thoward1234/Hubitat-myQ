@@ -37,6 +37,8 @@ preferences {
     page(name: "prefSensor2", title: "MyQ")
     page(name: "prefSensor3", title: "MyQ")
     page(name: "prefSensor4", title: "MyQ")
+    page(name: "prefSensor5", title: "MyQ")
+    page(name: "prefSensor6", title: "MyQ")
     page(name: "summary", title: "MyQ")
 }
 
@@ -184,8 +186,13 @@ def prefSensor3() {
 }
 
 def prefSensor4() {	   
+    def nextPage = "summary"
 	def titleText = "Contact Sensor for Door 4 (" + state.data[doors[3]].name + ")"
-    return dynamicPage(name: "prefSensor4",  title: "Optional Sensors and Push Buttons", nextPage:"summary", install:false, uninstall:true) {
+
+    if (doors.size() > 4){
+    	nextPage = "prefSensor5"        
+    }
+    return dynamicPage(name: "prefSensor4",  title: "Optional Sensors and Push Buttons", nextPage:nextPage, install:false, uninstall:true) {
         section(titleText){			
 			input(name: "door4Sensor", title: "Contact Sensor", type: "capability.contactSensor", required: "false", multiple: "false")
 			input(name: "door4Acceleration", title: "Acceleration Sensor", type: "capability.accelerationSensor", required: false, multiple: false)
@@ -193,6 +200,39 @@ def prefSensor4() {
         section("Create separate on/off push buttons?"){			
 			paragraph "Choose the option below to have extra on and off push button devices created. This is recommened if you have no sensors but still want a way to open/close the garage from SmartTiles."           
             input "prefDoor4PushButtons", "bool", required: false, title: "Create on/off push buttons?"
+		}
+    }
+}
+
+def prefSensor5() {	   
+    def nextPage = "summary"
+	def titleText = "Contact Sensor for Door 5 (" + state.data[doors[4]].name + ")"
+    if (doors.size() > 5){
+        nextPage = "prefSensor6"
+    }
+    return dynamicPage(name: "prefSensor5",  title: "Optional Sensors and Push Buttons", nextPage:nextPage, install:false, uninstall:true) {
+        section(titleText){			
+			input(name: "door5Sensor", title: "Contact Sensor", type: "capability.contactSensor", required: "false", multiple: "false")
+			input(name: "door5Acceleration", title: "Acceleration Sensor", type: "capability.accelerationSensor", required: false, multiple: false)
+		}
+        section("Create separate on/off push buttons?"){			
+			paragraph "Choose the option below to have extra on and off push button devices created. This is recommened if you have no sensors but still want a way to open/close the garage from SmartTiles."           
+            input "prefDoor5PushButtons", "bool", required: false, title: "Create on/off push buttons?"
+		}
+    }
+}
+
+def prefSensor6() {	   
+    def nextPage = "summary"
+	def titleText = "Contact Sensor for Door 6 (" + state.data[doors[5]].name + ")"
+    return dynamicPage(name: "prefSensor6",  title: "Optional Sensors and Push Buttons", nextPage:nextPage, install:false, uninstall:true) {
+        section(titleText){			
+			input(name: "door6Sensor", title: "Contact Sensor", type: "capability.contactSensor", required: "false", multiple: "false")
+			input(name: "door6Acceleration", title: "Acceleration Sensor", type: "capability.accelerationSensor", required: false, multiple: false)
+		}
+        section("Create separate on/off push buttons?"){			
+			paragraph "Choose the option below to have extra on and off push button devices created. This is recommened if you have no sensors but still want a way to open/close the garage from SmartTiles."           
+            input "prefDoor6PushButtons", "bool", required: false, title: "Create on/off push buttons?"
 		}
     }
 }
@@ -249,6 +289,8 @@ def initialize() {
         if (doors[1]) createChilDevices(doors[1], door2Sensor, doorsList[doors[1]], prefDoor2PushButtons)
         if (doors[2]) createChilDevices(doors[2], door3Sensor, doorsList[doors[2]], prefDoor3PushButtons)
         if (doors[3]) createChilDevices(doors[3], door4Sensor, doorsList[doors[3]], prefDoor4PushButtons)    
+        if (doors[4]) createChilDevices(doors[4], door4Sensor, doorsList[doors[4]], prefDoor5PushButtons)    
+        if (doors[5]) createChilDevices(doors[5], door4Sensor, doorsList[doors[5]], prefDoor6PushButtons)    
     }
     
     //Create light devices
@@ -304,6 +346,10 @@ def initialize() {
         subscribe(door3Sensor, "contact", sensorHandler)        
     if (door4Sensor)    	
         subscribe(door4Sensor, "contact", sensorHandler)
+    if (door5Sensor)    	
+        subscribe(door5Sensor, "contact", sensorHandler)
+    if (door6Sensor)    	
+        subscribe(door6Sensor, "contact", sensorHandler)
         
     if (door1Acceleration)
         subscribe(door1Acceleration, "acceleration", sensorHandler)    
@@ -313,6 +359,10 @@ def initialize() {
         subscribe(door3Acceleration, "acceleration", sensorHandler)        
     if (door4Acceleration)    	
         subscribe(door4Acceleration, "acceleration", sensorHandler)
+    if (door5Acceleration)    	
+        subscribe(door5Acceleration, "acceleration", sensorHandler)
+    if (door6Acceleration)    	
+        subscribe(door6Acceleration, "acceleration", sensorHandler)
         
     //Set initial values
     if (door1Sensor)
@@ -457,12 +507,20 @@ def syncDoorsWithSensors(child){
                 break
             case doors[3]:
             	updateDoorStatus(doors[3], door4Sensor, door4Acceleration, door4ThreeAxis, child)
+				break
+            case doors[4]:
+            	updateDoorStatus(doors[4], door5Sensor, door5Acceleration, door5ThreeAxis, child)
+				break
+            case doors[5]:
+            	updateDoorStatus(doors[5], door6Sensor, door6Acceleration, door6ThreeAxis, child)
      	}
     } else {           					// refresh ALL the doors
 		if (firstDoor) updateDoorStatus(firstDoor, door1Sensor, door1Acceleration, door1ThreeAxis, null)
 		if (doors[1]) updateDoorStatus(doors[1], door2Sensor, door2Acceleration, door2ThreeAxis, null)
 		if (doors[2]) updateDoorStatus(doors[2], door3Sensor, door3Acceleration, door3ThreeAxis, null)
 		if (doors[3]) updateDoorStatus(doors[3], door4Sensor, door4Acceleration, door4ThreeAxis, null)
+		if (doors[4]) updateDoorStatus(doors[4], door5Sensor, door5Acceleration, door5ThreeAxis, null)
+		if (doors[5]) updateDoorStatus(doors[5], door6Sensor, door6Acceleration, door6ThreeAxis, null)
     }
 }
 
@@ -562,6 +620,14 @@ def sensorHandler(evt) {
     	case door4Sensor?.id:
         case door4Acceleration?.id:
         	updateDoorStatus(doors[3], door4Sensor, door4Acceleration, door4ThreeAxis, null)
+            break
+    	case door5Sensor?.id:
+        case door5Acceleration?.id:
+        	updateDoorStatus(doors[4], door5Sensor, door5Acceleration, door5ThreeAxis, null)
+            break
+    	case door6Sensor?.id:
+        case door6Acceleration?.id:
+        	updateDoorStatus(doors[5], door6Sensor, door6Acceleration, door6ThreeAxis, null)
             break
         default:
 			syncDoorsWithSensors()
@@ -905,6 +971,12 @@ def sendCommand(child, attributeName, attributeValue) {
                 	break
             	case doors[3]:
             		if (door4Sensor){if (door4Acceleration) child.updateDeviceStatus("waiting") else child.updateDeviceStatus("closing")}
+        			break
+            	case doors[4]:
+            		if (door5Sensor){if (door5Acceleration) child.updateDeviceStatus("waiting") else child.updateDeviceStatus("closing")}
+        			break
+            	case doors[5]:
+            		if (door6Sensor){if (door6Acceleration) child.updateDeviceStatus("waiting") else child.updateDeviceStatus("closing")}
         			break
             }
         }      
