@@ -1,5 +1,5 @@
 /**
- *  MyQ Garage Door Opener
+ *  MyQ Garage Door Opener - https://github.com/thoward1234/Hubitat-myQ
  *
  *  Copyright 2018 Jason Mok/Brian Beaird/Barry Burke Thomas Howard
  *
@@ -12,11 +12,11 @@
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
  *
- *  Last Updated : 9/1/2018
+ *  Last Updated : 2019-04-07
  *
  */
 metadata {
-	definition (name: "MyQ Garage Door Opener", namespace: "tchoward", author: "Jason Mok/Brian Beaird/Barry Burke  Thomas Howard") {
+	definition (name: "MyQ Garage Door Opener", namespace: "tchoward", author: "Jason Mok/Brian Beaird/Barry Burke/Thomas Howard/Brian Wilson") {
 		capability "Garage Door Control"
 		capability "Door Control"
 		capability "Contact Sensor"
@@ -93,12 +93,12 @@ metadata {
 def parse(String description) {}
 
 def on() { 
-	log.debug "Turning door on!"    
+	parent.ifDebug("Turning door on!")    
     open()
     sendEvent(name: "switch", value: "on", isStateChange: true, display: true, displayed: true)	
 }
 def off() { 
-    log.debug "Turning door off!"
+    parent.ifDebug("Turning door off!")
     close()    
 	sendEvent(name: "switch", value: "off", isStateChange: true, display: true, displayed: true)
 }
@@ -114,16 +114,14 @@ def push() {
 }
 
 def open()  { 
-	log.debug "Garage door open command called."
-    parent.notify("Garage door open command called.")
+	parent.ifDebug("Garage door open command called.")
     updateDeviceStatus("opening")
     parent.sendCommand(this, "desireddoorstate", 1) 
 	
     runIn(20, refresh, [overwrite: true])	//Force a sync with tilt sensor after 20 seconds
 }
 def close() { 
-	log.debug "Garage door close command called."
-    parent.notify("Garage door close command called.")
+	parent.ifDebug("Garage door close command called.")
 	parent.sendCommand(this, "desireddoorstate", 0) 
 //	updateDeviceStatus("closing")			// Now handled in the parent (in case we have an Acceleration sensor, we can handle "waiting" state)
     runIn(30, refresh, [overwrite: true]) //Force a sync with tilt sensor after 30 seconds
@@ -141,41 +139,40 @@ def poll() { refresh() }
 def updateDeviceStatus(status) {	
     
     def currentState = device.currentState("door")?.value
-    log.debug "Request received to update door status to : " + status
+    parent.ifDebug("Request received to update door status to : " + status)
     
     //Don't do anything if nothing changed
     if (currentState == status){
-    	log.debug "No change; door is already set to " + status
+    	parent.ifDebug("No change; door is already set to " + status)
         status = ""
     }
     
     switch (status) {
 		case "open":
-    		log.debug "Door is now open"
+    		parent.ifDebug("Door is now open")
 			sendEvent(name: "door", value: "open", display: true, isStateChange: true, descriptionText: device.displayName + " is open") 
 			sendEvent(name: "contact", value: "open", display: false, displayed: false, isStateChange: true)	// make sure we update the hidden states as well
         	sendEvent(name: "switch", value: "on", display: false, displayed: false, isStateChange: true)		// on == open
             break
             
         case "closed":
-			log.debug "Door is now closed"
-        	sendEvent(name: "door", value: "closed", display: true, isStateChange: true, descriptionText: device.displayName + " is closed")
+			parent.ifDebug("Door is now closed")
+		    sendEvent(name: "door", value: "closed", display: true, isStateChange: true, descriptionText: device.displayName + " is closed")
 			sendEvent(name: "contact", value: "closed", display: false, displayed: false, isStateChange: true)	// update hidden states
         	sendEvent(name: "switch", value: "off", display: false, displayed: false, isStateChange: true)		// off == closed
             break
             
 		case "opening":
 			if (currentState == "open"){
-        		log.debug "Door is already open. Leaving status alone."
-        	}
-        	else{
+        		parent.ifDebug("Door is already open. Leaving status alone.")
+			} else{
         		sendEvent(name: "door", value: "opening", descriptionText: "Sent opening command.", display: false, displayed: true, isStateChange: true)
         	}
             break
 
 		case "closing":
     		if(currentState == "closed"){
-        		log.debug "Door is already closed. Leaving status alone."
+        		parent.ifDebug("Door is already closed. Leaving status alone.")
         	}
 			else{
         		sendEvent(name: "door", value: "closing", display: false, displayed: false, isStateChange: true)
@@ -184,14 +181,14 @@ def updateDeviceStatus(status) {
 	
     	case "stopped":
     		if (currentState != "closed") {
-    			log.debug "Door is stopped"
+    			parent.ifDebug("Door is stopped")
     			sendEvent(name: "door", value: "stopped", display: false, displayed: false, isStateChange: true)
         	}
             break
             
         case "waiting":
         	if (currentState == "open") {
-            	log.debug "Door is waiting before closing"
+            	parent.ifDebug("Door is waiting before closing")
                 sendEvent(name: "door", value: "waiting", display: false, displayed: false, isStateChange: true)
             }
             break
@@ -211,10 +208,7 @@ def updateDeviceMoving(moving) {
 	sendEvent(name: "doorMoving", value: moving, display: false , displayed: false)
 }
 
-def log(msg){
-	log.debug msg
+def showVersion(){
+	return "2.2.5"
 }
 
-def showVersion(){
-	return "2.1.2"
-}

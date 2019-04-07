@@ -12,11 +12,11 @@
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
  *
- *  Last Updated : 2019-01-04
+ *  Last Updated : 2019-04-07
  *
  */
 metadata {
-	definition (name: "MyQ Garage Door Opener-NoSensor", namespace: "tchoward", author: "Jason Mok/Brian Beaird/Barry Burke  Thomas Howard") {
+	definition (name: "MyQ Garage Door Opener-NoSensor", namespace: "tchoward", author: "Jason Mok/Brian Beaird/Barry Burke/Thomas Howard/Brian Wilson") {
 		capability "Door Control"
 		capability "Garage Door Control"
 		capability "Actuator"
@@ -64,13 +64,13 @@ def close() {
 
 def openPrep(){
 	sendEvent(name: "door", value: "opening", descriptionText: "Open button pushed.", isStateChange: true, display: false, displayed: true)
-    log.debug "Opening!"
+    parent.ifDebug("Opening!")
     runIn(20, resetToUnknown) //Reset to normal state after 20 seconds
 }
 
 def closePrep(){
 	sendEvent(name: "door", value: "closing", descriptionText: "Close button pushed.", isStateChange: true, display: false, displayed: true)
-    log.debug "Closing!"
+    parent.ifDebug("Closing!")
     runIn(20, resetToUnknown)  //Reset to normal state after 20 seconds
 }
 
@@ -82,10 +82,6 @@ def resetToUnknown(){
     sendEvent(name: "CloseButton", value: "normal", displayed: false, isStateChange: true)
 }
 
-def log(msg){
-	log.debug msg
-}
-
 def showVersion(){
-	return "1.1.8"
+	return "1.1.9"
 }
