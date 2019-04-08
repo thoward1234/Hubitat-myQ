@@ -591,7 +591,7 @@ def updateDoorStatus(doorDNI, sensor, acceleration, threeAxis, child){
 def refresh(child){	
     def door = child.device.deviceNetworkId
     def doorName = state.data[door].name
-    child.log("refresh called from " + doorName + ' (' + door + ')')
+    ifDebug("refresh called from " + doorName + ' (' + door + ')')
     syncDoorsWithSensors(child)
 }
 
