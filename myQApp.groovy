@@ -12,8 +12,8 @@
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
  *
- *  Last Updated : 04/07/2019
- *  SmartApp version: 3.0.1
+ *  Last Updated : 04/08/2019
+ *  SmartApp version: 3.0.2
  *  Door device version: 2.2.5
  *  Door-no-sensor device version: 1.1.9
  *  Light device version: not provided/tested.
@@ -49,7 +49,7 @@ def prefLogIn() {
     if (state.previousVersion == null){
     	state.previousVersion = 0;
     }
-    state.thisSmartAppVersion = "3.0.1"
+    state.thisSmartAppVersion = "3.0.2"
     state.installMsg = ""
     def showUninstall = username != null && password != null 
 	return dynamicPage(name: "prefLogIn", title: "Connect to MyQ", nextPage:"prefListDevices", uninstall:showUninstall, install: false) {
@@ -560,15 +560,9 @@ def updateDoorStatus(doorDNI, sensor, acceleration, threeAxis, child){
     
     ifDebug("Door: " + doorName + ": Updating with status - " + value + " -  from sensor " + sensor)
     
-    //Write to child log if this was initiated from one of the doors    
-    if (child)
-    	child.log("Door: " + doorName + ": Updating with status - " + value + " -  from sensor " + sensor)
- 
      if (acceleration) {
      	doorToUpdate.updateDeviceMoving("${acceleration} is ${moving}")
         ifDebug("Door: " + doorName + ": Updating with status - " + moving + " - from sensor " + acceleration)
-        if (child)
-        	child.log("Door: " + doorName + ": Updating with status - " + moving + " - from sensor " + acceleration)
      }
     
     //Get latest activity timestamp for the sensor (data saved for up to a week)
@@ -582,10 +576,6 @@ def updateDoorStatus(doorDNI, sensor, acceleration, threeAxis, child){
     	doorToUpdate.updateDeviceLastActivity(latestEvent)    	
     	
     ifDebug(timeStampLogText)  
-    
-    //Write to child log if this was initiated from one of the doors
-    if (child)
-    	child.log(timeStampLogText)
 }
 
 def refresh(child){	
